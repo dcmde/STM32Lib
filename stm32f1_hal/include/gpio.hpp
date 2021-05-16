@@ -19,28 +19,41 @@ enum GPIOPin {
     PIN_10 = GPIO_Pin_10,
     PIN_11 = GPIO_Pin_11,
     PIN_12 = GPIO_Pin_12,
-    PIN_13 = GPIO_Pin_13
+    PIN_13 = GPIO_Pin_13,
+    PIN_14 = GPIO_Pin_14,
+    PIN_15 = GPIO_Pin_15
+};
+
+enum Pin {
+    A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A15,
+    B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15,
+    C13, C14, C15
 };
 
 class Gpio {
 public:
 
-    static void setPin(GPIOPin pin, GPIO_TypeDef *port, GPIOMode_TypeDef mode,
+    static void setPin(Pin pin, GPIOMode_TypeDef mode,
                        GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
 
-    static void setGPIOA(GPIOPin pin, GPIOMode_TypeDef mode, GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
+    static void pinHigh(Pin pin);
 
-    static void setGPIOB(GPIOPin pin, GPIOMode_TypeDef mode, GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
+    static void pinLow(Pin pin);
 
-    static void setGPIOC(GPIOPin pin, GPIOMode_TypeDef mode, GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
+    static uint8_t readPin(Pin pin);
+
+private:
 
     static void pinHigh(GPIOPin pin, GPIO_TypeDef *port);
 
     static void pinLow(GPIOPin pin, GPIO_TypeDef *port);
 
-    static void tooglePin(GPIOPin pin, GPIO_TypeDef *port);
-
     static uint8_t readPin(GPIOPin pin, GPIO_TypeDef *port);
+
+    static void setPin(GPIOPin pin, GPIO_TypeDef *port, GPIOMode_TypeDef mode,
+                       GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
+
+    static void getPin(Pin pin, GPIO_TypeDef **port, GPIOPin *gpio_pin);
 
 };
 
