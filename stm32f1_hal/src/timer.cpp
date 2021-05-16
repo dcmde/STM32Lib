@@ -52,3 +52,9 @@ void Timer::setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_
             break;
     }
 }
+
+void Timer::setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
+                       uint16_t pulse) {
+    set(TIMx, div, prescaler, period, Up);
+    setPWM(TIMx, PWM_1, channel, pulse);
+}

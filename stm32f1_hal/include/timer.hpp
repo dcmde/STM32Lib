@@ -50,6 +50,10 @@ public:
 
     static void setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t pulse,
                        OCPolarity oc_polarity = High);
+
+    static void
+    setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
+               uint16_t pulse);
 };
 
 #endif //STM32F103_TIMER_HPP
