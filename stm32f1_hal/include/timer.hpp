@@ -44,6 +44,17 @@ enum OCChannel {
     Channel_4
 };
 
+enum InterruptMode {
+    Update = TIM_IT_Update,
+    CC1 = TIM_IT_CC1,
+    CC2 = TIM_IT_CC2,
+    CC3 = TIM_IT_CC3,
+    CC4 = TIM_IT_CC4,
+    COM = TIM_IT_COM,
+    Trigger = TIM_IT_Trigger,
+    Break = TIM_IT_Break
+};
+
 class Timer {
 public:
     static void set(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, uint16_t period, CounterMode mode);
@@ -51,13 +62,20 @@ public:
     static void setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t pulse,
                        OCPolarity oc_polarity = High);
 
-    static void
-    setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
-               uint16_t pulse);
+    static void setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel,
+                           uint16_t period, uint16_t pulse);
 
     static void setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse);
 
-    void setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse);
+    static void setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse);
+
+    static void setTimerInterrupt(TIM_TypeDef *TIMx, IRQn irq, InterruptMode itMode);
+
+private:
+
+    void setAPBClock(){
+
+    }
 
 };
 

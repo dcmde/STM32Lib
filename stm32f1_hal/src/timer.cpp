@@ -1,3 +1,4 @@
+#include <misc.h>
 #include "timer.hpp"
 
 void Timer::set(TIM_TypeDef *TIMx, const ClockDivision div, const uint16_t prescaler, const uint16_t period,
@@ -20,8 +21,8 @@ void Timer::set(TIM_TypeDef *TIMx, const ClockDivision div, const uint16_t presc
     TIM_BaseInitStruct.TIM_Prescaler = prescaler;
 
     TIM_TimeBaseInit(TIMx, &TIM_BaseInitStruct);
-    TIM_Cmd(TIMx, ENABLE);
     TIM_ARRPreloadConfig(TIMx, ENABLE);
+    TIM_Cmd(TIMx, ENABLE);
 }
 
 void Timer::setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t pulse, OCPolarity oc_polarity) {
@@ -65,4 +66,24 @@ void Timer::setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse) {
 
 void Timer::setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse) {
     TIMx->ARR = pulse;
+}
+
+void Timer::setTimerInterrupt(TIM_TypeDef *TIMx, IRQn irq, InterruptMode itMode) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+
+    NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitStructure.NVIC_IRQChannel = irq;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
+//    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+//    TIM_TimeBaseStructure.TIM_Period = 1000;
+//    TIM_TimeBaseStructure.TIM_Prescaler = 720;
+//    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+//    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+//    TIM_TimeBaseInit(TIMx, &TIM_TimeBaseStructure);
+    TIM_ITConfig(TIMx, itMode, ENABLE);
+//    TIM_Cmd(TIMx, ENABLE);
 }
