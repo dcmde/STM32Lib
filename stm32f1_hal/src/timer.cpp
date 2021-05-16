@@ -20,8 +20,8 @@ void Timer::set(TIM_TypeDef *TIMx, const ClockDivision div, const uint16_t presc
     TIM_BaseInitStruct.TIM_Prescaler = prescaler;
 
     TIM_TimeBaseInit(TIMx, &TIM_BaseInitStruct);
-    TIM_ARRPreloadConfig(TIMx, ENABLE);
     TIM_Cmd(TIMx, ENABLE);
+    TIM_ARRPreloadConfig(TIMx, ENABLE);
 }
 
 void Timer::setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t pulse, OCPolarity oc_polarity) {
@@ -35,7 +35,7 @@ void Timer::setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_
     switch (channel) {
         case Channel_1:
             TIM_OC1Init(TIMx, &OC_InitStruct);
-//            TIM_OC1PreloadConfig(TIMx, TIM_OCPreload_Enable);
+            TIM_OC1PreloadConfig(TIMx, TIM_OCPreload_Enable);
             TIM_CtrlPWMOutputs(TIMx, ENABLE);
             break;
         case Channel_2:
@@ -57,4 +57,12 @@ void Timer::setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler,
                        uint16_t pulse) {
     set(TIMx, div, prescaler, period, Up);
     setPWM(TIMx, PWM_1, channel, pulse);
+}
+
+void Timer::setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse) {
+    TIMx->CCR1 = pulse;
+}
+
+void Timer::setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse) {
+    TIMx->ARR = pulse;
 }

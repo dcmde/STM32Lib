@@ -54,6 +54,11 @@ public:
     static void
     setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
                uint16_t pulse);
+
+    static void setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse);
+
+    void setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse);
+
 };
 
 #endif //STM32F103_TIMER_HPP
