@@ -14,6 +14,7 @@ void init_spi(SPI_TypeDef *SPIx, int status) {
 
     if (SPIx == SPI1) {
         RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
         GPIOx_ = GPIOA;
         MOSI_PIN = GPIO_Pin_7;
         MISO_PIN = GPIO_Pin_6;
@@ -21,11 +22,12 @@ void init_spi(SPI_TypeDef *SPIx, int status) {
         NSS_PIN_ = GPIO_Pin_4;
     } else if (SPIx == SPI2) {
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
         GPIOx_ = GPIOB;
-        MOSI_PIN = GPIO_Pin_7;
-        MISO_PIN = GPIO_Pin_6;
-        SCK_PIN = GPIO_Pin_5;
-        NSS_PIN_ = GPIO_Pin_4;
+        MOSI_PIN = GPIO_Pin_15;
+        MISO_PIN = GPIO_Pin_14;
+        SCK_PIN = GPIO_Pin_13;
+        NSS_PIN_ = GPIO_Pin_12;
     }
 
     // GPIO pins for MOSI, MISO, and SCK
@@ -49,7 +51,6 @@ void init_spi(SPI_TypeDef *SPIx, int status) {
         SPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;
         SPI_InitStruct.SPI_CPOL = SPI_CPOL_Low;
         SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
-        SPI_Init(SPIx, &SPI_InitStruct);
     } else {
         SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
         SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
