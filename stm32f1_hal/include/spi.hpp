@@ -6,6 +6,8 @@
 #include <stm32f10x_rcc.h>
 #include <stm32f10x_spi.h>
 
+#include <gpio.hpp>
+
 enum SPIStatus {
     MASTER,
     SLAVE
@@ -16,9 +18,11 @@ public:
 
     void set(SPI_TypeDef *SPIx, SPIStatus status);
 
-    void select();
+    void setSelectPin(Pin pin);
 
-    void deselect();
+    void select(Pin pin);
+
+    void deselect(Pin pin);
 
     uint8_t send_receive(uint8_t data);
 

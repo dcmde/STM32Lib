@@ -55,12 +55,16 @@ void SPI::set(SPI_TypeDef *SPIx, SPIStatus status) {
     SPI_Cmd(SPIx, ENABLE);
 }
 
-void SPI::select() {
-    GPIOx_->BRR |= NSS_PIN_;
+void SPI::setSelectPin(Pin pin) {
+    Gpio::setPin(pin, GPIO_Mode_Out_PP, GPIO_Speed_10MHz);
 }
 
-void SPI::deselect() {
-    GPIOx_->BSRR |= NSS_PIN_;
+void SPI::select(Pin pin) {
+    Gpio::pinHigh(pin);
+}
+
+void SPI::deselect(Pin pin) {
+    Gpio::pinLow(pin);
 }
 
 uint8_t SPI::send_receive(uint8_t data) {
