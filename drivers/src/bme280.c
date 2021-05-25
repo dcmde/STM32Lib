@@ -25,7 +25,7 @@ uint8_t BME280_Init(BME280_InitTypeDef* BME280_InitStruct){
 	return 0;
 }
 
-void BME280_ReadConfugrationParameters(BME280_CompParam* BME280_CompParamStruct){
+void BME280_ReadConfigurationParameters(BME280_CompParam* BME280_CompParamStruct){
 	// Array for the read register. The first addresses follow each other.
 	uint8_t registerReadout[24] = {0};
 	// Read registers for Temp and pressure.

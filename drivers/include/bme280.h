@@ -82,7 +82,7 @@
 														 (x == OVS_H_16))
 /**
   * @brief Default ID of the device. Used to check that the device is present.
-	*				 Id of mass production device. Other possibilites are 0x56 or 0x57.
+	*				 Id of mass production device. Other possibilities are 0x56 or 0x57.
 	*/
 #define BME280_DEFAULT_ID		0x58	
 
@@ -186,7 +186,7 @@ uint32_t BME280_CompensatePres(int32_t adc_P, BME280_CompParam* BME280_CompParam
 uint32_t BME280_CompensateHum(int32_t adc_H, BME280_CompParam* BME280_CompParamStruct);
 
 void BME280_ReadSensors(BME280_SensorsValues* BME280_Sensors, BME280_CompParam* BME280_CompParamStruct);
-void BME280_ReadConfugrationParameters(BME280_CompParam* BME280_CompParamStruct);
+void BME280_ReadConfigurationParameters(BME280_CompParam* BME280_CompParamStruct);
 
 uint8_t BME280_ReadRegister(uint8_t register_address);
 void BME280_ReadRegisters(uint8_t register_address, uint8_t* buffer, uint8_t size);
