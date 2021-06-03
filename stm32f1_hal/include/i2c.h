@@ -7,6 +7,10 @@
 #include "stm32f10x_gpio.h"
 #include "error_type.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define I2C_OWN_ADDR    0x02
 
 ERROR_t I2C_Initilazation(uint8_t i2c, uint8_t own_address, uint32_t speed);
@@ -45,5 +49,8 @@ ERROR_t I2C1_ReadBuffer(uint8_t dev_address, uint8_t reg_address, uint8_t *buffe
 
 ERROR_t I2C2_ReadBuffer(uint8_t dev_address, uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif // I2C_F103
