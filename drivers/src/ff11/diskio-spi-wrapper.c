@@ -1,11 +1,6 @@
-#include <spi.h>
-#include <stdio.h>
 #include "diskio-spi-wrapper.h"
 
-extern SPI_t *spi_miroSd;
-
 void SELECT(void) {
-    printf("select\n");
     spi_slave_enable(spi_miroSd);
 }
 

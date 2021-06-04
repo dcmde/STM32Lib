@@ -59,6 +59,10 @@ void init_spi(SPI_t *spiStruct) {
     SPI_Cmd(SPIx, ENABLE);
 }
 
+void spi_slave_enable(SPI_t *spiStruct) {
+    spiStruct->GPIOx->BRR |= spiStruct->NSS_PIN;
+}
+
 void spi_slave_disable(SPI_t *spiStruct) {
     spiStruct->GPIOx->BSRR |= spiStruct->NSS_PIN;
 }
@@ -90,8 +94,4 @@ void spi_buffer_send_receive(SPI_t *spiStruct, const uint8_t reg_address, uint8_
         buffer[i] = SPIx->DR;
     }
     while (SPIx->SR & (SPI_I2S_FLAG_BSY));
-}
-
-void spi_slave_enable(SPI_t *spiStruct) {
-    spiStruct->GPIOx->BSRR |= spiStruct->NSS_PIN;
 }
