@@ -1,6 +1,3 @@
-
-#include <bme280.hpp>
-
 #include "bme280.h"
 #include "i2c.h"
 
@@ -159,7 +156,7 @@ uint8_t BME280_ReadRegister(const uint8_t register_address) {
 void BME280_ReadRegisters(const uint8_t register_address,
                           uint8_t *buffer,
                           const uint8_t size) {
-    I2C_ReadBuffer(I2C_ADDR, register_address, buffer, size);
+    I2C_ReadBuffer(1, I2C_ADDR, register_address, buffer, size);
 }
 
 /**
@@ -168,5 +165,5 @@ void BME280_ReadRegisters(const uint8_t register_address,
 	* @param The value of the register.
 	*/
 void BME280_WriteRegister(uint8_t register_address, uint8_t value) {
-    I2C_WriteBuffer(I2C_ADDR, register_address, &value, 1);
+    I2C_WriteBuffer(1, I2C_ADDR, register_address, &value, 1);
 }
