@@ -10,13 +10,25 @@
 extern "C" {
 #endif
 
-void init_spi(SPI_TypeDef *SPIx, int status);
+typedef enum {
+    SLAVE = 0,
+    MASTER = 1
+} SPI_MODE;
 
-void spi_slave_disable();
+typedef struct {
+    SPI_TypeDef *SPIx;
+    SPI_MODE mode;
+    GPIO_TypeDef *GPIOx;
+    uint16_t NSS_PIN;
+} SPI_t;
 
-uint8_t spi_send_receive(uint8_t data);
+void init_spi(SPI_t *spi);
 
-void spi_slave_enable();
+void spi_slave_enable(SPI_t *spi);
+
+void spi_slave_disable(SPI_t *spi);
+
+uint8_t spi_send_receive(SPI_t *spi, uint8_t data);
 
 #ifdef __cplusplus
 }

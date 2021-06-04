@@ -2,6 +2,9 @@
 #define DISKIO_SPI_WRAPPER_H
 
 #include "integer.h"
+#include "spi.h"
+
+SPI_t* spi_microSd;
 
 void SELECT(void);
 void DESELECT(void);
