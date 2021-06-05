@@ -24,6 +24,8 @@ typedef struct {
 
 void init_spi(SPI_t *spiStruct);
 
+void init_spi_pin(SPI_t *spiStruct);
+
 void spi_slave_enable(SPI_t *spiStruct);
 
 void spi_slave_disable(SPI_t *spiStruct);

@@ -1,16 +1,13 @@
 #include "spi.h"
 
 void init_spi(SPI_t *spiStruct) {
-    uint16_t MOSI_PIN, MISO_PIN, SCK_PIN, NSS_PIN;
+    uint16_t MOSI_PIN, MISO_PIN, SCK_PIN;
     SPI_TypeDef *SPIx;
     GPIO_TypeDef *GPIOx;
     SPI_InitTypeDef SPI_InitStruct;
     GPIO_InitTypeDef GPIO_InitStruct;
 
     SPIx = spiStruct->SPIx;
-    GPIOx = spiStruct->GPIOx;
-
-    NSS_PIN = spiStruct->NSS_PIN;
 
     if (SPIx == SPI1) {
         RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
@@ -34,11 +31,6 @@ void init_spi(SPI_t *spiStruct) {
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOx, &GPIO_InitStruct);
 
-    // GPIO pin for SS
-    GPIO_InitStruct.GPIO_Pin = NSS_PIN;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOx, &GPIO_InitStruct);
-
     SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b;
     SPI_InitStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
     SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
@@ -57,6 +49,29 @@ void init_spi(SPI_t *spiStruct) {
     }
     SPI_Init(SPIx, &SPI_InitStruct);
     SPI_Cmd(SPIx, ENABLE);
+}
+
+void init_spi_pin(SPI_t *spiStruct) {
+    GPIO_TypeDef *GPIOx;
+    GPIO_InitTypeDef GPIO_InitStruct;
+    uint16_t NSS_PIN;
+
+    NSS_PIN = spiStruct->NSS_PIN;
+    GPIOx = spiStruct->GPIOx;
+
+    if (GPIOx == GPIOA) {
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    } else if (GPIOx == GPIOB) {
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    } else if (GPIOx == GPIOC) {
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+    }
+
+    // GPIO pin for SS
+    GPIO_InitStruct.GPIO_Pin = NSS_PIN;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(GPIOx, &GPIO_InitStruct);
 }
 
 void spi_slave_enable(SPI_t *spiStruct) {
