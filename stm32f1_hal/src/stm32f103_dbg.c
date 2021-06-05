@@ -1,7 +1,5 @@
 #include "stm32f103_dbg.h"
-
 #include <stm32f10x_rcc.h>
-#include <stm32f10x_tim.h>
 
 //volatile uint32_t DBG_TimeStamp = 0;
 
@@ -20,22 +18,21 @@ int _write(int file, char *ptr, int len){
 	return len;
 }
 
-///**
-//	* @about Activate SW debug.
-//	* @brief Set the register to activate the SWO port (PB3).
-//	*    	 The port PB3 could not be used when this is activated.
-//	*/
-//void DBG_Init(void){
-//	// Get register value.
-//	uint32_t tmp = AFIO->MAPR;
-//	// Clear bits of the register for debug config.
-//	tmp &= ~AFIO_MAPR_SWJ_CFG;
-//	// Enable SW-DP and disable JTAG.
-//	tmp |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
-//	// Write into the register the new config.
-//	AFIO->MAPR = tmp;
-//}
-
+/**
+	* @about Activate SW debug.
+	* @brief Set the register to activate the SWO port (PB3).
+	*    	 The port PB3 could not be used when this is activated.
+	*/
+void DBG_Init(void){
+	// Get register value.
+	uint32_t tmp = AFIO->MAPR;
+	// Clear bits of the register for debug config.
+	tmp &= ~AFIO_MAPR_SWJ_CFG;
+	// Enable SW-DP and disable JTAG.
+	tmp |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
+	// Write into the register the new config.
+	AFIO->MAPR = tmp;
+}
 
 //void DBG_InitTimestamp(DBG_TimestampFreq dbg_timestampFreq){
 //
