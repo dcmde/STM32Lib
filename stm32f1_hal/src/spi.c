@@ -109,7 +109,7 @@ void spi_buffer_send_receive(SPI_t *spiStruct, uint8_t *buffer, uint8_t num_byte
         buffer[i - 1] = SPIx->DR;
     }
     while (!(SPIx->SR & (SPI_I2S_FLAG_RXNE)));
-    buffer[num_bytes_read] = SPIx->DR;
+    buffer[num_bytes_read-1] = SPIx->DR;
     while (!(SPIx->SR & (SPI_I2S_FLAG_TXE)));
     while (SPIx->SR & (SPI_I2S_FLAG_BSY));
 }
