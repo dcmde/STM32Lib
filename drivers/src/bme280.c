@@ -1,9 +1,26 @@
+#include <stm32f10x_conf.h>
 #include "bme280.h"
-#include "i2c.h"
 
 #define I2C_ADDR        0x77
 
-uint8_t BME280_Init(BME280_InitTypeDef *BME280_InitStruct) {
+int32_t BME280_CompensateTemp(int32_t adc_T, BME280_CompParam *BME280_CompParamStruct);
+
+uint32_t BME280_CompensatePres(int32_t adc_P, BME280_CompParam *BME280_CompParamStruct);
+
+uint32_t BME280_CompensateHum(int32_t adc_H, BME280_CompParam *BME280_CompParamStruct);
+
+//uint8_t BME280_ReadRegister(uint8_t register_address);
+
+//void BME280_ReadRegisters(uint8_t register_address, uint8_t *buffer, uint8_t size);
+
+//void BME280_WriteRegister(uint8_t register_address, uint8_t value);
+
+uint8_t BME280_Init(BME280_t *bme280) {
+    BME280_InitTypeDef *BME280_InitStruct;
+    BME280_InitStruct = &bme280->initStruct;
+    uint8_t (*BME280_ReadRegister)(uint8_t) = bme280->ReadRegister;
+    void (*BME280_WriteRegister)(uint8_t, uint8_t) = bme280->WriteRegister;
+
     // Check the parameters.
     assert_param(BME280_IS_OVS_T(BME280_InitStruct->OVS_T));
     assert_param(BME280_IS_OVS_P(BME280_InitStruct->OVS_P));
@@ -25,7 +42,12 @@ uint8_t BME280_Init(BME280_InitTypeDef *BME280_InitStruct) {
     return 0;
 }
 
-void BME280_ReadConfigurationParameters(BME280_CompParam *BME280_CompParamStruct) {
+void BME280_ReadConfigurationParameters(BME280_t *bme280) {
+    BME280_CompParam *BME280_CompParamStruct;
+    BME280_CompParamStruct = &bme280->compParam;
+    void (*BME280_ReadRegisters)(uint8_t, uint8_t *, uint8_t) = bme280->ReadRegisters;
+    uint8_t (*BME280_ReadRegister)(uint8_t) = bme280->ReadRegister;
+
     // Array for the read register. The first addresses follow each other.
     uint8_t registerReadout[24] = {0};
     // Read registers for Temp and pressure.
@@ -54,6 +76,30 @@ void BME280_ReadConfigurationParameters(BME280_CompParam *BME280_CompParamStruct
 }
 
 
+/**
+  * @about Read the pressure, temperature and humidity of the sensor.
+  * @param
+  */
+void BME280_ReadSensors(BME280_t *bme280) {
+    BME280_SensorsValues *BME280_Sensors;
+    BME280_CompParam *BME280_CompParamStruct;
+    BME280_CompParamStruct = &bme280->compParam;
+    BME280_Sensors = &bme280->sensorsValues;
+    void (*BME280_ReadRegisters)(uint8_t, uint8_t *, uint8_t) = bme280->ReadRegisters;
+
+    uint8_t buffer[8];
+    // Read all registers.
+    BME280_ReadRegisters(BME280_PRESS_MSB, buffer, 8);
+    // Get the adc values fron the buffer read.
+    int32_t adc_P = (int32_t) (buffer[0] << 12) | (int32_t) (buffer[1] << 4) | (int32_t) (buffer[2] >> 4);
+    int32_t adc_T = (int32_t) (buffer[3] << 12) | (int32_t) (buffer[4] << 4) | (int32_t) (buffer[5] >> 4);
+    int32_t adc_H = (int32_t) (buffer[6] << 7) | (int32_t) (buffer[7]);
+    // Compensate the ADC values, has to start with temperature for t_fine.
+    BME280_Sensors->Temp = BME280_CompensateTemp(adc_T, BME280_CompParamStruct);
+    BME280_Sensors->Pres = BME280_CompensatePres(adc_P, BME280_CompParamStruct);
+    BME280_Sensors->Hum = BME280_CompensateHum(adc_H, BME280_CompParamStruct);
+}
+
 // Returns temperature in DegC, resolution is 0.01 DegC. Output value of �5123� equals 51.23 DegC.
 // t_fine carries fine temperature as global value
 int32_t t_fine;
@@ -69,6 +115,7 @@ int32_t BME280_CompensateTemp(int32_t adc_T, BME280_CompParam *BME280_CompParamS
     T = (t_fine * 5 + 128) >> 8;
     return T;
 }
+
 
 // Returns pressure in Pa as unsigned 32 bit integer. Output value of �96386� equals 96386 Pa = 963.86 hPa
 uint32_t BME280_CompensatePres(int32_t adc_P, BME280_CompParam *BME280_CompParamStruct) {
@@ -100,7 +147,6 @@ uint32_t BME280_CompensatePres(int32_t adc_P, BME280_CompParam *BME280_CompParam
     return p;
 }
 
-
 // Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
 // Output value of �47445� represents 47445/1024 = 46.333 %RH
 uint32_t BME280_CompensateHum(int32_t adc_H, BME280_CompParam *BME280_CompParamStruct) {
@@ -120,50 +166,32 @@ uint32_t BME280_CompensateHum(int32_t adc_H, BME280_CompParam *BME280_CompParamS
     return (uint32_t) (v_x1_u32r >> 12);
 }
 
-/**
-  * @about Read the pressure, temperature and humidity of the sensor.
-  * @param 
-  */
-void BME280_ReadSensors(BME280_SensorsValues *BME280_Sensors, BME280_CompParam *BME280_CompParamStruct) {
-    uint8_t buffer[8];
-    // Read all registers.
-    BME280_ReadRegisters(BME280_PRESS_MSB, buffer, 8);
-    // Get the adc values fron the buffer read.
-    int32_t adc_P = (int32_t) (buffer[0] << 12) | (int32_t) (buffer[1] << 4) | (int32_t) (buffer[2] >> 4);
-    int32_t adc_T = (int32_t) (buffer[3] << 12) | (int32_t) (buffer[4] << 4) | (int32_t) (buffer[5] >> 4);
-    int32_t adc_H = (int32_t) (buffer[6] << 7) | (int32_t) (buffer[7]);
-    // Compensate the ADC values, has to start with temperature for t_fine.
-    BME280_Sensors->Temp = BME280_CompensateTemp(adc_T, BME280_CompParamStruct);
-    BME280_Sensors->Pres = BME280_CompensatePres(adc_P, BME280_CompParamStruct);
-    BME280_Sensors->Hum = BME280_CompensateHum(adc_H, BME280_CompParamStruct);
-}
-
-/**
-	* @about Read a register of the device using spi.
-	* @param The address of the register to read.
-	* @retval The value of the register.
-	*/
-uint8_t BME280_ReadRegister(const uint8_t register_address) {
-    // Variable to get the returned value from device.
-    uint8_t received_data;
-
-    BME280_ReadRegisters(register_address, &received_data, 1);
-
-    // Return the value.
-    return received_data;
-}
-
-void BME280_ReadRegisters(const uint8_t register_address,
-                          uint8_t *buffer,
-                          const uint8_t size) {
-    I2C_ReadBuffer(1, I2C_ADDR, register_address, buffer, size);
-}
-
-/**
-	* @about Write into a register of the device using spi.
-	* @param The address of the register to write.
-	* @param The value of the register.
-	*/
-void BME280_WriteRegister(uint8_t register_address, uint8_t value) {
-    I2C_WriteBuffer(1, I2C_ADDR, register_address, &value, 1);
-}
+///**
+//	* @about Read a register of the device using spi.
+//	* @param The address of the register to read.
+//	* @retval The value of the register.
+//	*/
+//uint8_t BME280_ReadRegister(const uint8_t register_address) {
+//    // Variable to get the returned value from device.
+//    uint8_t received_data;
+//
+//    BME280_ReadRegisters(register_address, &received_data, 1);
+//
+//    // Return the value.
+//    return received_data;
+//}
+//
+//void BME280_ReadRegisters(const uint8_t register_address,
+//                          uint8_t *buffer,
+//                          const uint8_t size) {
+//    I2C_ReadBuffer(1, I2C_ADDR, register_address, buffer, size);
+//}
+//
+///**
+//	* @about Write into a register of the device using spi.
+//	* @param The address of the register to write.
+//	* @param The value of the register.
+//	*/
+//void BME280_WriteRegister(uint8_t register_address, uint8_t value) {
+//    I2C_WriteBuffer(1, I2C_ADDR, register_address, &value, 1);
+//}

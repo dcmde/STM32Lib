@@ -96,17 +96,20 @@ uint8_t spi_send_receive(SPI_t *spiStruct, uint8_t data) {
     return SPIx->DR;
 }
 
-void spi_buffer_send_receive(SPI_t *spiStruct, const uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read) {
+void spi_buffer_send_receive(SPI_t *spiStruct, uint8_t *buffer, uint8_t num_bytes_read) {
+    //According to stm32f1 reference manual page 683.
     SPI_TypeDef *SPIx;
     SPIx = spiStruct->SPIx;
+    SPIx->DR = buffer[0];
     // Wait until transmit complete
-    while (!(SPIx->SR & (SPI_I2S_FLAG_TXE)));
-    SPIx->DR = reg_address;
-    for (uint8_t i = 0; i < num_bytes_read; ++i) {
+    for (uint8_t i = 1; i < num_bytes_read; ++i) {
         while (!(SPIx->SR & (SPI_I2S_FLAG_TXE)));
         SPIx->DR = buffer[i];
         while (!(SPIx->SR & (SPI_I2S_FLAG_RXNE)));
-        buffer[i] = SPIx->DR;
+        buffer[i - 1] = SPIx->DR;
     }
+    while (!(SPIx->SR & (SPI_I2S_FLAG_RXNE)));
+    buffer[num_bytes_read] = SPIx->DR;
+    while (!(SPIx->SR & (SPI_I2S_FLAG_TXE)));
     while (SPIx->SR & (SPI_I2S_FLAG_BSY));
 }

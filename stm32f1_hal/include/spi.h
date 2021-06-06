@@ -32,7 +32,7 @@ void spi_slave_disable(SPI_t *spiStruct);
 
 uint8_t spi_send_receive(SPI_t *spiStruct, uint8_t data);
 
-void spi_buffer_send_receive(SPI_t *spiStruct, uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read);
+void spi_buffer_send_receive(SPI_t *spiStruct, uint8_t *buffer, uint8_t num_bytes_read);
 
 #ifdef __cplusplus
 }
