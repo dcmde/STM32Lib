@@ -9,6 +9,10 @@
 #ifndef BME280_H
 #define BME280_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*--------------------------------- Includes ---------------------------------*/
 
 #include "stdint.h"
@@ -82,7 +86,7 @@
                                                          (x == OVS_H_16))
 /**
   * @brief Default ID of the device. Used to check that the device is present.
-	*				 Id of mass production device. Other possibilities are 0x56 or 0x57.
+	*				 Id of mass production device 0x58. Other possibilities are 0x56, 0x57 or 0x60.
 	*/
 #define BME280_DEFAULT_ID        0x58
 
@@ -197,5 +201,9 @@ uint8_t BME280_Init(BME280_t *bme280);
 void BME280_ReadConfigurationParameters(BME280_t *bme280);
 
 void BME280_ReadSensors(BME280_t *bme280);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // BME280_H
