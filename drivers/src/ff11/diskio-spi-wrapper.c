@@ -1,21 +1,21 @@
 #include "diskio-spi-wrapper.h"
 
 void SELECT(void) {
-    spi_slave_enable(spi_miroSd);
+    SPI_SlaveEnable(spi_miroSd);
 }
 
 void DESELECT(void) {
-    spi_slave_disable(spi_miroSd);
+    SPI_SlaveDisable(spi_miroSd);
 }
 
 void xmit_spi(BYTE Data) {
-    spi_send_receive(spi_miroSd, Data);
+    SPI_SendReceive(spi_miroSd, Data);
 }
 
 BYTE rcvr_spi(void) {
     unsigned char Dummy;
     Dummy = 0xFF;
-    return spi_send_receive(spi_miroSd, Dummy);
+    return SPI_SendReceive(spi_miroSd, Dummy);
 }
 
 void rcvr_spi_m(BYTE *dst) {

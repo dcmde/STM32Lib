@@ -22,17 +22,17 @@ typedef struct {
     uint16_t NSS_PIN;
 } SPI_t;
 
-void init_spi(SPI_t *spiStruct);
+void SPI_Initialization(SPI_t *spiStruct);
 
-void init_spi_pin(SPI_t *spiStruct);
+void SPI_InitPin(SPI_t *spiStruct);
 
-void spi_slave_enable(SPI_t *spiStruct);
+void SPI_SlaveEnable(SPI_t *spiStruct);
 
-void spi_slave_disable(SPI_t *spiStruct);
+void SPI_SlaveDisable(SPI_t *spiStruct);
 
-uint8_t spi_send_receive(SPI_t *spiStruct, uint8_t data);
+uint8_t SPI_SendReceive(SPI_t *spiStruct, uint8_t data);
 
-void spi_buffer_send_receive(SPI_t *spiStruct, uint8_t *buffer, uint8_t num_bytes_read);
+void SPI_BufferSendReceive(SPI_t *spiStruct, uint8_t *buffer, uint8_t num_bytes_read);
 
 #ifdef __cplusplus
 }

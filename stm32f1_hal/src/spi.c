@@ -1,6 +1,6 @@
 #include "spi.h"
 
-void init_spi(SPI_t *spiStruct) {
+void SPI_Initialization(SPI_t *spiStruct) {
     uint16_t MOSI_PIN, MISO_PIN, SCK_PIN;
     SPI_TypeDef *SPIx;
     GPIO_TypeDef *GPIOx;
@@ -51,7 +51,7 @@ void init_spi(SPI_t *spiStruct) {
     SPI_Cmd(SPIx, ENABLE);
 }
 
-void init_spi_pin(SPI_t *spiStruct) {
+void SPI_InitPin(SPI_t *spiStruct) {
     GPIO_TypeDef *GPIOx;
     GPIO_InitTypeDef GPIO_InitStruct;
     uint16_t NSS_PIN;
@@ -74,15 +74,15 @@ void init_spi_pin(SPI_t *spiStruct) {
     GPIO_Init(GPIOx, &GPIO_InitStruct);
 }
 
-void spi_slave_enable(SPI_t *spiStruct) {
+void SPI_SlaveEnable(SPI_t *spiStruct) {
     spiStruct->GPIOx->BRR |= spiStruct->NSS_PIN;
 }
 
-void spi_slave_disable(SPI_t *spiStruct) {
+void SPI_SlaveDisable(SPI_t *spiStruct) {
     spiStruct->GPIOx->BSRR |= spiStruct->NSS_PIN;
 }
 
-uint8_t spi_send_receive(SPI_t *spiStruct, uint8_t data) {
+uint8_t SPI_SendReceive(SPI_t *spiStruct, uint8_t data) {
     SPI_TypeDef *SPIx;
     SPIx = spiStruct->SPIx;
     // Wait until transmit complete
@@ -96,7 +96,7 @@ uint8_t spi_send_receive(SPI_t *spiStruct, uint8_t data) {
     return SPIx->DR;
 }
 
-void spi_buffer_send_receive(SPI_t *spiStruct, uint8_t *buffer, uint8_t num_bytes_read) {
+void SPI_BufferSendReceive(SPI_t *spiStruct, uint8_t *buffer, uint8_t num_bytes_read) {
     //According to stm32f1 reference manual page 683.
     SPI_TypeDef *SPIx;
     SPIx = spiStruct->SPIx;
