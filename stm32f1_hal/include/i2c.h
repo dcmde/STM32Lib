@@ -13,11 +13,11 @@ extern "C" {
 
 #define I2C_OWN_ADDR    0x02
 
-ERROR_t I2C_Initilazation(uint8_t i2c, uint8_t own_address, uint32_t speed);
+ERROR_t I2C_Initialization(uint8_t i2c, uint8_t own_address, uint32_t speed);
 
-ERROR_t I2C1_Initilazation(uint32_t speed);
+ERROR_t I2C1_Initialization(uint32_t speed);
 
-ERROR_t I2C2_Initilazation(uint32_t speed);
+ERROR_t I2C2_Initialization(uint32_t speed);
 
 ERROR_t I2C_Write(uint8_t i2c, uint8_t dev_address, uint8_t stop_flag, uint8_t *buffer, uint8_t size);
 

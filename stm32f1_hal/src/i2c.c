@@ -2,7 +2,7 @@
 
 // For more details on the STM32F103 I2C have a look at the reference manuel page 759.
 
-ERROR_t I2C_Initilazation(const uint8_t i2c, const uint8_t own_address, const uint32_t speed) {
+ERROR_t I2C_Initialization(const uint8_t i2c, const uint8_t own_address, const uint32_t speed) {
 
     // Init variables.
     I2C_InitTypeDef I2C_InitStructure;
@@ -60,11 +60,11 @@ ERROR_t I2C_Initilazation(const uint8_t i2c, const uint8_t own_address, const ui
     return NO_ERROR;
 }
 
-ERROR_t I2C1_Initilazation(const uint32_t speed) {
+ERROR_t I2C1_Initialization(const uint32_t speed) {
     return I2C_Initilazation(1, I2C_OWN_ADDR, speed);
 }
 
-ERROR_t I2C2_Initilazation(const uint32_t speed) {
+ERROR_t I2C2_Initialization(const uint32_t speed) {
     return I2C_Initilazation(2, I2C_OWN_ADDR, speed);
 }
 
