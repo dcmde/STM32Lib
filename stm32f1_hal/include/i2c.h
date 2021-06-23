@@ -13,41 +13,27 @@ extern "C" {
 
 #define I2C_OWN_ADDR    0x02
 
-ERROR_t I2C_Initialization(uint8_t i2c, uint8_t own_address, uint32_t speed);
+typedef struct {
+    uint8_t own_dev_addr;
+    uint8_t dev_addr;
+    uint8_t  stop_flag;
+    I2C_TypeDef *I2Cx;
+    uint32_t speed;
+} I2C_t;
 
-ERROR_t I2C1_Initialization(uint32_t speed);
+ERROR_t I2C_Initialization(I2C_t *i2c);
 
-ERROR_t I2C2_Initialization(uint32_t speed);
+ERROR_t I2C_Write(I2C_t *i2c, uint8_t *buffer, uint8_t size);
 
-ERROR_t I2C_Write(uint8_t i2c, uint8_t dev_address, uint8_t stop_flag, uint8_t *buffer, uint8_t size);
+ERROR_t I2C_WriteByte(I2C_t *i2c, uint8_t reg_address, uint8_t reg_value);
 
-ERROR_t I2C1_Write(uint8_t dev_address, uint8_t stop_flag, uint8_t *buffer, uint8_t size);
+ERROR_t I2C_WriteBuffer(I2C_t *i2c, uint8_t reg_address, uint8_t *buffer, uint8_t size);
 
-ERROR_t I2C2_Write(uint8_t dev_address, uint8_t stop_flag, uint8_t *buffer, uint8_t size);
+ERROR_t I2C_Read(I2C_t *i2c, uint8_t *buffer, uint8_t num_bytes_read);
 
-ERROR_t I2C_Read(uint8_t i2c, uint8_t dev_address, uint8_t *buffer, uint8_t num_bytes_read);
+uint8_t I2C_ReadByte(I2C_t *i2c, uint8_t reg_address);
 
-ERROR_t I2C1_Read(uint8_t dev_address, uint8_t *buffer, uint8_t num_bytes_read);
-
-ERROR_t I2C2_Read(uint8_t dev_address, uint8_t *buffer, uint8_t num_bytes_read);
-
-ERROR_t I2C_WriteByte(uint8_t i2c, uint8_t dev_address, uint8_t reg_address, uint8_t reg_value);
-
-ERROR_t I2C1_WriteByte(uint8_t dev_address, uint8_t reg_address, uint8_t reg_value);
-
-ERROR_t I2C2_WriteByte(uint8_t dev_address, uint8_t reg_address, uint8_t reg_value);
-
-ERROR_t I2C_WriteBuffer(uint8_t i2c, uint8_t dev_address, uint8_t reg_address, uint8_t *buffer, uint8_t size);
-
-ERROR_t I2C1_WriteBuffer(uint8_t dev_address, uint8_t reg_address, uint8_t *buffer, uint8_t size);
-
-ERROR_t I2C2_WriteBuffer(uint8_t dev_address, uint8_t reg_address, uint8_t *buffer, uint8_t size);
-
-ERROR_t I2C_ReadBuffer(uint8_t i2c, uint8_t dev_address, uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read);
-
-ERROR_t I2C1_ReadBuffer(uint8_t dev_address, uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read);
-
-ERROR_t I2C2_ReadBuffer(uint8_t dev_address, uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read);
+ERROR_t I2C_ReadBuffer(I2C_t *i2c, uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read);
 
 #ifdef __cplusplus
 }
