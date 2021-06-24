@@ -165,33 +165,3 @@ uint32_t BME280_CompensateHum(int32_t adc_H, BME280_CompParam *BME280_CompParamS
     v_x1_u32r = (v_x1_u32r > 419430400 ? 419430400 : v_x1_u32r);
     return (uint32_t) (v_x1_u32r >> 12);
 }
-
-///**
-//	* @about Read a register of the device using spi.
-//	* @param The address of the register to read.
-//	* @retval The value of the register.
-//	*/
-//uint8_t BME280_ReadRegister(const uint8_t register_address) {
-//    // Variable to get the returned value from device.
-//    uint8_t received_data;
-//
-//    BME280_ReadRegisters(register_address, &received_data, 1);
-//
-//    // Return the value.
-//    return received_data;
-//}
-//
-//void BME280_ReadRegisters(const uint8_t register_address,
-//                          uint8_t *buffer,
-//                          const uint8_t size) {
-//    I2C_ReadBuffer(1, I2C_ADDR, register_address, buffer, size);
-//}
-//
-///**
-//	* @about Write into a register of the device using spi.
-//	* @param The address of the register to write.
-//	* @param The value of the register.
-//	*/
-//void BME280_WriteRegister(uint8_t register_address, uint8_t value) {
-//    I2C_WriteBuffer(1, I2C_ADDR, register_address, &value, 1);
-//}

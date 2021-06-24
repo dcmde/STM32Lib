@@ -93,6 +93,14 @@ extern "C" {
 /*--------------------------------- Enums ------------------------------------*/
 
 /**
+  * @brief I2C BME280 address
+	*/
+typedef enum {
+    BME280_I2C_ADDR_0x76 = 0x76, // SDO to ground
+    BME280_I2C_ADDR_0x77 = 0x77  // SDO to VCC
+} BME280_I2C_ADDR;
+
+/**
   * @brief Sensor mode of the device.
 	*/
 typedef enum {
@@ -182,7 +190,6 @@ typedef struct {
 } BME280_SensorsValues;
 
 typedef struct {
-    uint8_t dev_address;
     BME280_InitTypeDef initStruct;
     BME280_CompParam compParam;
     BME280_SensorsValues sensorsValues;
