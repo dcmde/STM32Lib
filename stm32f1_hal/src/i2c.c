@@ -56,13 +56,12 @@ ERROR_t I2C_Initialization(I2C_t *i2c) {
     return NO_ERROR;
 }
 
-ERROR_t I2C_Write(I2C_t *i2c, uint8_t *buffer, uint8_t size) {
-    uint8_t dev_address = i2c->dev_addr;
+ERROR_t I2C_Write(I2C_t *i2c, uint8_t dev_addr, uint8_t *buffer, uint8_t size) {
     uint8_t stop_flag = i2c->stop_flag;
     I2C_TypeDef *I2C_Periph = i2c->I2Cx;
 
     // Shift the address. Needed because the bit 0 is for R/W.
-    dev_address <<= 1;
+    dev_addr <<= 1;
 
     while (I2C_GetFlagStatus(I2C_Periph, I2C_FLAG_BUSY));
 
@@ -71,7 +70,7 @@ ERROR_t I2C_Write(I2C_t *i2c, uint8_t *buffer, uint8_t size) {
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for write.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Transmitter);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Transmitter);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 
     // Send register address to write the value into device.
@@ -90,12 +89,11 @@ ERROR_t I2C_Write(I2C_t *i2c, uint8_t *buffer, uint8_t size) {
     return NO_ERROR;
 }
 
-ERROR_t I2C_WriteByte(I2C_t *i2c, const uint8_t reg_address, const uint8_t reg_value) {
+ERROR_t I2C_WriteByte(I2C_t *i2c, uint8_t dev_addr, uint8_t reg_addr, uint8_t reg_value) {
     I2C_TypeDef *I2C_Periph = i2c->I2Cx;
-    uint8_t dev_address = i2c->dev_addr;
 
     // Shift the address. Needed because the bit 0 is for R/W.
-    dev_address <<= 1;
+    dev_addr <<= 1;
 
     while (I2C_GetFlagStatus(I2C_Periph, I2C_FLAG_BUSY));
 
@@ -104,12 +102,12 @@ ERROR_t I2C_WriteByte(I2C_t *i2c, const uint8_t reg_address, const uint8_t reg_v
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for write.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Transmitter);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Transmitter);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 
     // Send register address to write the value into device.
-    I2C_Cmd(I2C_Periph, ENABLE);
-    I2C_SendData(I2C_Periph, reg_address);
+//    I2C_Cmd(I2C_Periph, ENABLE);
+    I2C_SendData(I2C_Periph, reg_addr);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
 
     // Send register value and send stop condition.
@@ -121,12 +119,11 @@ ERROR_t I2C_WriteByte(I2C_t *i2c, const uint8_t reg_address, const uint8_t reg_v
     return NO_ERROR;
 }
 
-ERROR_t I2C_WriteBuffer(I2C_t *i2c, uint8_t reg_address, uint8_t *buffer, uint8_t size) {
+ERROR_t I2C_WriteBuffer(I2C_t *i2c, uint8_t dev_addr, uint8_t reg_addr, uint8_t *buffer, uint8_t size) {
     I2C_TypeDef *I2C_Periph = i2c->I2Cx;
-    uint8_t dev_address = i2c->dev_addr;
 
     // Shift the address. Needed because the bit 0 is for R/W.
-    dev_address <<= 1;
+    dev_addr <<= 1;
 
     while (I2C_GetFlagStatus(I2C_Periph, I2C_FLAG_BUSY));
 
@@ -135,12 +132,12 @@ ERROR_t I2C_WriteBuffer(I2C_t *i2c, uint8_t reg_address, uint8_t *buffer, uint8_
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for write.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Transmitter);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Transmitter);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 
     // Send register address to write the value into device.
-    I2C_Cmd(I2C_Periph, ENABLE);
-    I2C_SendData(I2C_Periph, reg_address);
+//    I2C_Cmd(I2C_Periph, ENABLE);
+    I2C_SendData(I2C_Periph, reg_addr);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
 
     for (uint8_t i = 0; i < size; ++i) {
@@ -153,19 +150,18 @@ ERROR_t I2C_WriteBuffer(I2C_t *i2c, uint8_t reg_address, uint8_t *buffer, uint8_
     return NO_ERROR;
 }
 
-ERROR_t I2C_Read(I2C_t *i2c, uint8_t *buffer, uint8_t num_bytes_read) {
+ERROR_t I2C_Read(I2C_t *i2c, uint8_t dev_addr, uint8_t *buffer, uint8_t num_bytes_read) {
     I2C_TypeDef *I2C_Periph = i2c->I2Cx;
-    uint8_t dev_address = i2c->dev_addr;
 
     // Shift the address. Needed because the bit 0 is for R/W.
-    dev_address <<= 1;
+    dev_addr <<= 1;
 
     // Send START condition to read.
     I2C_GenerateSTART(I2C_Periph, ENABLE);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for write.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Receiver);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Receiver);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED));
 
     // While the total number of byte was not read.
@@ -188,13 +184,12 @@ ERROR_t I2C_Read(I2C_t *i2c, uint8_t *buffer, uint8_t num_bytes_read) {
     return NO_ERROR;
 }
 
-uint8_t I2C_ReadByte(I2C_t *i2c, const uint8_t reg_address) {
+uint8_t I2C_ReadByte(I2C_t *i2c, uint8_t dev_addr, uint8_t reg_addr) {
     I2C_TypeDef *I2C_Periph = i2c->I2Cx;
-    uint8_t dev_address = i2c->dev_addr;
     uint8_t value;
 
     // Shift the address. Needed because the bit 0 is for R/W.
-    dev_address <<= 1;
+    dev_addr <<= 1;
 
     while (I2C_GetFlagStatus(I2C_Periph, I2C_FLAG_BUSY));
 
@@ -203,12 +198,12 @@ uint8_t I2C_ReadByte(I2C_t *i2c, const uint8_t reg_address) {
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for write.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Transmitter);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Transmitter);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 
     // Send register address to write the value into device.
-    I2C_Cmd(I2C_Periph, ENABLE);
-    I2C_SendData(I2C_Periph, reg_address);
+//    I2C_Cmd(I2C_Periph, ENABLE);
+    I2C_SendData(I2C_Periph, reg_addr);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
 
     // Send START condition to read the register.
@@ -216,7 +211,7 @@ uint8_t I2C_ReadByte(I2C_t *i2c, const uint8_t reg_address) {
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for read.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Receiver);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Receiver);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED));
 
     // Send NACK and stop condition.
@@ -232,12 +227,11 @@ uint8_t I2C_ReadByte(I2C_t *i2c, const uint8_t reg_address) {
     return value;
 }
 
-ERROR_t I2C_ReadBuffer(I2C_t *i2c, const uint8_t reg_address, uint8_t *buffer, uint8_t num_bytes_read) {
+ERROR_t I2C_ReadBuffer(I2C_t *i2c, uint8_t dev_addr, uint8_t reg_addr, uint8_t *buffer, uint8_t size) {
     I2C_TypeDef *I2C_Periph = i2c->I2Cx;
-    uint8_t dev_address = i2c->dev_addr;
 
     // Shift the address. Needed because the bit 0 is for R/W.
-    dev_address <<= 1;
+    dev_addr <<= 1;
 
     while (I2C_GetFlagStatus(I2C_Periph, I2C_FLAG_BUSY));
 
@@ -246,12 +240,12 @@ ERROR_t I2C_ReadBuffer(I2C_t *i2c, const uint8_t reg_address, uint8_t *buffer, u
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for write.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Transmitter);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Transmitter);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 
     // Send register address to write the value into device.
-    I2C_Cmd(I2C_Periph, ENABLE);
-    I2C_SendData(I2C_Periph, reg_address);
+//    I2C_Cmd(I2C_Periph, ENABLE);
+    I2C_SendData(I2C_Periph, reg_addr);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
 
     // Send START condition to read the register.
@@ -259,14 +253,14 @@ ERROR_t I2C_ReadBuffer(I2C_t *i2c, const uint8_t reg_address, uint8_t *buffer, u
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_MODE_SELECT));
 
     // Send the device address for read.
-    I2C_Send7bitAddress(I2C_Periph, dev_address, I2C_Direction_Receiver);
+    I2C_Send7bitAddress(I2C_Periph, dev_addr, I2C_Direction_Receiver);
     while (!I2C_CheckEvent(I2C_Periph, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED));
 
     // While the total number of byte was not read.
-    while (num_bytes_read--) {
+    while (size--) {
 
         // If the last byte is going to be read.
-        if (num_bytes_read < 1) {
+        if (size < 1) {
             // Send NACK and stop condition.
             I2C_AcknowledgeConfig(I2C_Periph, DISABLE);
             I2C_GenerateSTOP(I2C_Periph, ENABLE);
