@@ -118,8 +118,8 @@ typedef struct {
 
     ERROR_t (*WriteBuffer)(uint8_t reg_addr, uint8_t *buffer, uint8_t size);
 
-    int16_t *accel;
-    int16_t *gyro;
+    int16_t accel[3];
+    int16_t gyro[3];
 } MPU6050_t;
 
 typedef struct {
