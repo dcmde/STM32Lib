@@ -1,7 +1,7 @@
 #include <misc.h>
-#include "timer.hpp"
+#include "timer.h"
 
-void Timer::set(TIM_TypeDef *TIMx, const ClockDivision div, const uint16_t prescaler, const uint16_t period,
+void timer_init(TIM_TypeDef *TIMx, const ClockDivision div, const uint16_t prescaler, const uint16_t period,
                 const CounterMode mode) {
     TIM_TimeBaseInitTypeDef TIM_BaseInitStruct;
 
@@ -25,7 +25,7 @@ void Timer::set(TIM_TypeDef *TIMx, const ClockDivision div, const uint16_t presc
     TIM_Cmd(TIMx, ENABLE);
 }
 
-void Timer::setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t pulse, OCPolarity oc_polarity) {
+void timer_setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t pulse, OCPolarity oc_polarity) {
     TIM_OCInitTypeDef OC_InitStruct;
 
     OC_InitStruct.TIM_OCMode = oc_mode;
@@ -54,21 +54,21 @@ void Timer::setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_
     }
 }
 
-void Timer::setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
-                       uint16_t pulse) {
-    set(TIMx, div, prescaler, period, Up);
-    setPWM(TIMx, PWM_1, channel, pulse);
+void timer_setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
+                      uint16_t pulse) {
+    timer_init(TIMx, div, prescaler, period, Up);
+    timer_setPWM(TIMx, PWM_1, channel, pulse);
 }
 
-void Timer::setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse) {
+void timer_setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse) {
     TIMx->CCR1 = pulse;
 }
 
-void Timer::setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse) {
+void timer_setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse) {
     TIMx->ARR = pulse;
 }
 
-void Timer::setTimerInterrupt(TIM_TypeDef *TIMx, IRQn irq, InterruptMode itMode) {
+void timer_setTimerInterrupt(TIM_TypeDef *TIMx, enum IRQn irq, InterruptMode itMode) {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
     NVIC_InitTypeDef NVIC_InitStructure;
