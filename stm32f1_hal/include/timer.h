@@ -9,13 +9,13 @@ extern "C" {
 #endif
 
 
-typedef enum {
+typedef enum ClockDivision {
     Div_1 = TIM_CKD_DIV1,
     Div_2 = TIM_CKD_DIV2,
     Div_4 = TIM_CKD_DIV4
 } ClockDivision;
 
-typedef enum {
+typedef enum CounterMode {
     Up = TIM_CounterMode_Up,
     Down = TIM_CounterMode_Down,
     Center_1 = TIM_CounterMode_CenterAligned1,
@@ -23,7 +23,7 @@ typedef enum {
     Center_3 = TIM_CounterMode_CenterAligned3
 } CounterMode;
 
-typedef enum {
+typedef enum OCMode {
     Timing = TIM_OCMode_Timing,
     Active = TIM_OCMode_Active,
     Inactive = TIM_OCMode_Inactive,
@@ -32,7 +32,7 @@ typedef enum {
     PWM_2 = TIM_OCMode_PWM2
 } OCMode;
 
-typedef enum {
+typedef enum OCPolarity {
     High = TIM_OCPolarity_High,
     Low = TIM_OCPolarity_Low
 } OCPolarity;
@@ -42,14 +42,14 @@ typedef enum OutputState {
     Disable = TIM_OutputState_Disable
 } OutputState;
 
-typedef enum {
+typedef enum OCChannel {
     Channel_1,
     Channel_2,
     Channel_3,
     Channel_4
 } OCChannel;
 
-typedef enum {
+typedef enum InterruptMode {
     Update = TIM_IT_Update,
     CC1 = TIM_IT_CC1,
     CC2 = TIM_IT_CC2,
@@ -65,10 +65,7 @@ void timer_init(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, uint16
 
 void timer_setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t pulse, OCPolarity oc_polarity);
 
-void timer_setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
-                      uint16_t pulse);
-
-void timer_setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse);
+void timer_setChannelPulse(TIM_TypeDef *TIMx, OCChannel channel, uint16_t pulse);
 
 void timer_setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse);
 

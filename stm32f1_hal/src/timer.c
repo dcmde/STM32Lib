@@ -37,31 +37,38 @@ void timer_setPWM(TIM_TypeDef *TIMx, OCMode oc_mode, OCChannel channel, uint16_t
         case Channel_1:
             TIM_OC1Init(TIMx, &OC_InitStruct);
             TIM_OC1PreloadConfig(TIMx, TIM_OCPreload_Enable);
-            TIM_CtrlPWMOutputs(TIMx, ENABLE);
             break;
         case Channel_2:
             TIM_OC2Init(TIMx, &OC_InitStruct);
-//            TIM_OC2PreloadConfig(TIMx, TIM_OCPreload_Enable);
+            TIM_OC2PreloadConfig(TIMx, TIM_OCPreload_Enable);
             break;
         case Channel_3:
             TIM_OC3Init(TIMx, &OC_InitStruct);
-//            TIM_OC3PreloadConfig(TIMx, TIM_OCPreload_Enable);
+            TIM_OC3PreloadConfig(TIMx, TIM_OCPreload_Enable);
             break;
         case Channel_4:
             TIM_OC4Init(TIMx, &OC_InitStruct);
-//            TIM_OC4PreloadConfig(TIMx, TIM_OCPreload_Enable);
+            TIM_OC4PreloadConfig(TIMx, TIM_OCPreload_Enable);
             break;
     }
+    TIM_CtrlPWMOutputs(TIMx, ENABLE);
 }
 
-void timer_setTIM_PWM(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, OCChannel channel, uint16_t period,
-                      uint16_t pulse) {
-    timer_init(TIMx, div, prescaler, period, Up);
-    timer_setPWM(TIMx, PWM_1, channel, pulse);
-}
-
-void timer_setTIMPulse(TIM_TypeDef *TIMx, uint16_t pulse) {
-    TIMx->CCR1 = pulse;
+void timer_setChannelPulse(TIM_TypeDef *TIMx, OCChannel channel, uint16_t pulse) {
+    switch (channel) {
+        case Channel_1:
+            TIMx->CCR1 = pulse;
+            break;
+        case Channel_2:
+            TIMx->CCR2 = pulse;
+            break;
+        case Channel_3:
+            TIMx->CCR3 = pulse;
+            break;
+        case Channel_4:
+            TIMx->CCR4 = pulse;
+            break;
+    }
 }
 
 void timer_setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse) {
