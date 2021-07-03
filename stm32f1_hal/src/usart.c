@@ -1,6 +1,6 @@
-#include "usart.hpp"
+#include "usart.h"
 
-void USART::configure(USART_TypeDef *usart, uint32_t speed) {
+void uart_configure(USART_TypeDef *usart, uint32_t speed) {
     GPIO_InitTypeDef GPIO_InitStructureTx;
     GPIO_InitTypeDef GPIO_InitStructureRx;
     USART_InitTypeDef USART_InitStructure;
@@ -43,17 +43,26 @@ void USART::configure(USART_TypeDef *usart, uint32_t speed) {
     USART_Cmd(usart, ENABLE);
 }
 
-void USART::send(USART_TypeDef *usart, const uint16_t *data) {
-    while (!(usart->SR & USART_FLAG_TXE));
-    usart->DR = *data;
-}
-
-void USART::send(USART_TypeDef *usart, const uint16_t data) {
+void uart_send(USART_TypeDef *usart, const uint16_t data) {
     while (!(usart->SR & USART_FLAG_TXE));
     usart->DR = data;
 }
 
-uint16_t USART::receive(USART_TypeDef *usart) {
+void uart_send_buffer(USART_TypeDef *usart, const uint16_t *buffer, uint16_t size) {
+    for (uint16_t i = 0; i < size; ++i) {
+        while (!(usart->SR & USART_FLAG_TXE));
+        usart->DR = buffer[i];
+    }
+}
+
+uint16_t uart_receive(USART_TypeDef *usart) {
     while (!(usart->SR & USART_FLAG_RXNE));
     return usart->DR & (uint16_t) 0x01FF;
+}
+
+void uart_receive_buffer(USART_TypeDef *usart, uint16_t *buffer, uint16_t size) {
+    for (uint16_t i = 0; i < size; ++i) {
+        while (!(usart->SR & USART_FLAG_RXNE));
+        buffer[i] = usart->DR & (uint16_t) 0x01FF;
+    }
 }
