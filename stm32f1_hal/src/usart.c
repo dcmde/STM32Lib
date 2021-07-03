@@ -1,3 +1,4 @@
+#include <misc.h>
 #include "usart.h"
 
 void uart_configure(USART_TypeDef *usart, uint32_t speed) {
@@ -41,6 +42,20 @@ void uart_configure(USART_TypeDef *usart, uint32_t speed) {
 
     USART_Init(usart, &USART_InitStructure);
     USART_Cmd(usart, ENABLE);
+}
+
+void uart_configure_interrupt(USART_TypeDef *USARTx, IRQn_Type IRQn) {
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+
+    NVIC_InitStructure.NVIC_IRQChannel = IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
+    USART_ITConfig(USARTx, USART_IT_RXNE, ENABLE);
 }
 
 void uart_send(USART_TypeDef *usart, const uint16_t data) {

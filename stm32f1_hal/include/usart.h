@@ -12,6 +12,8 @@ extern "C" {
 
 void uart_configure(USART_TypeDef *usart, uint32_t speed);
 
+void uart_configure_interrupt(USART_TypeDef *usart, IRQn_Type IRQn);
+
 void uart_send(USART_TypeDef *usart, uint16_t data);
 
 void uart_send_buffer(USART_TypeDef *usart, const uint16_t *buffer, uint16_t size);
