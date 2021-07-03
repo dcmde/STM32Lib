@@ -60,6 +60,17 @@ typedef enum InterruptMode {
     Break = TIM_IT_Break
 } InterruptMode;
 
+typedef enum EncoderMode {
+    ENCODER_MODE_1 = TIM_EncoderMode_TI1,
+    ENCODER_MODE_2 = TIM_EncoderMode_TI2,
+    ENCODER_MODE_3 = TIM_EncoderMode_TI12
+} EncoderMode;
+
+typedef enum EncoderPolarity {
+    ENCODER_FALLING = TIM_ICPolarity_Falling,
+    ENCODER_RISING = TIM_ICPolarity_Rising
+} EncoderPolarity;
+
 
 void timer_init(TIM_TypeDef *TIMx, ClockDivision div, uint16_t prescaler, uint16_t period, CounterMode mode);
 
@@ -70,6 +81,10 @@ void timer_setChannelPulse(TIM_TypeDef *TIMx, OCChannel channel, uint16_t pulse)
 void timer_setTIMPeriod(TIM_TypeDef *TIMx, uint16_t pulse);
 
 void timer_setTimerInterrupt(TIM_TypeDef *TIMx, enum IRQn irq, InterruptMode itMode);
+
+void timer_setEncoder(TIM_TypeDef *TIMx, EncoderMode mode, EncoderPolarity polarityIn1, EncoderPolarity polarityIn2);
+
+uint16_t timer_getEncoderCount(TIM_TypeDef *TIMx);
 
 #ifdef __cplusplus
 }

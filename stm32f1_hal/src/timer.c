@@ -94,3 +94,11 @@ void timer_setTimerInterrupt(TIM_TypeDef *TIMx, enum IRQn irq, InterruptMode itM
     TIM_ITConfig(TIMx, itMode, ENABLE);
 //    TIM_Cmd(TIMx, ENABLE);
 }
+
+void timer_setEncoder(TIM_TypeDef *TIMx, EncoderMode mode, EncoderPolarity polarityIn1, EncoderPolarity polarityIn2) {
+    TIM_EncoderInterfaceConfig(TIMx, mode, polarityIn1, polarityIn2);
+}
+
+uint16_t timer_getEncoderCount(TIM_TypeDef *TIMx) {
+    return TIMx->CNT;
+}
