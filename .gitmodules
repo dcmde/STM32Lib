@@ -4,3 +4,6 @@
 [submodule "STM32F10x_StdPeriph_Lib_V3.3.0"]
 	path = STM32F10x_StdPeriph_Lib_V3.3.0
 	url = https://github.com/dcmde/STM32F10x_StdPeriph_Lib_V3.3.0.git
+[submodule "HC_12"]
+	path = HC_12
+	url = https://github.com/dcmde/HC_12.git
