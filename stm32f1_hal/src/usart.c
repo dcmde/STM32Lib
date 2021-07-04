@@ -44,7 +44,7 @@ void uart_configure(USART_TypeDef *usart, uint32_t speed) {
     USART_Cmd(usart, ENABLE);
 }
 
-void uart_configure_interrupt(USART_TypeDef *USARTx, IRQn_Type IRQn) {
+void uart_configure_interrupt(USART_TypeDef *USARTx, IRQn_Type IRQn, uint16_t USART_IT) {
     NVIC_InitTypeDef NVIC_InitStructure;
 
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
@@ -55,7 +55,7 @@ void uart_configure_interrupt(USART_TypeDef *USARTx, IRQn_Type IRQn) {
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    USART_ITConfig(USARTx, USART_IT_RXNE, ENABLE);
+    USART_ITConfig(USARTx, USART_IT, ENABLE);
 }
 
 void uart_send(USART_TypeDef *usart, const uint16_t data) {
