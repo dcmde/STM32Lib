@@ -7,3 +7,6 @@
 [submodule "HC_12"]
 	path = HC_12
 	url = https://github.com/dcmde/HC_12.git
+[submodule "nmea"]
+	path = nmea
+	url = https://github.com/dcmde/nmea.git
